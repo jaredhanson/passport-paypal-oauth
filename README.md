@@ -55,21 +55,6 @@ application:
         // Successful authentication, redirect home.
         res.redirect('/');
       });
-      
-#### Extended Permissions
-
-If you need extended permissions from the user, the permissions can be requested
-via the `scope` option to `passport.authenticate()`.
-
-For example, this authorization requests permission to the user's statuses and
-checkins:
-
-    app.get('/auth/paypal',
-      passport.authenticate('paypal', { scope: ['user_status', 'user_checkins'] }),
-      function(req, res){
-        // The request will be redirected to PayPal for authentication, with
-        // extended permissions.
-      });
 
 ## Examples
 
