@@ -67,6 +67,7 @@ For a complete, working example, refer to the [login example](https://github.com
 
 [![Build Status](https://secure.travis-ci.org/jaredhanson/passport-paypal-oauth.png)](http://travis-ci.org/jaredhanson/passport-paypal-oauth)
 
+
 ## Credits
 
   - [Jared Hanson](http://github.com/jaredhanson)
