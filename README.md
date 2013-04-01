@@ -5,7 +5,7 @@ using the OAuth 2.0 API.
 
 This is a fork from the original stratgey. Fixed endpoints for OpenId Connect. Fixed the UserInfo code.
 
-
+Application can be rgistered at: https://devportal.x.com/sdm/myprofile
 
 This module lets you authenticate using PayPal in your Node.js applications.
 By plugging into Passport, PayPal authentication can be easily and
