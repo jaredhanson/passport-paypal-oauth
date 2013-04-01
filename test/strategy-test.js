@@ -30,17 +30,7 @@ vows.describe('PayPalStrategy').addBatch({
       
       // mock
       strategy._oauth2.getProtectedResource = function(url, accessToken, callback) {
-        var body = '{ \
-            "status": "SUCCESS", \
-            "identity": { \
-                "status": "ACTIVE", \
-                "fullName": "Jared Hanson", \
-                "userId": "123456789", \
-                "firstName": "Jared", \
-                "lastName": "Hanson", \
-                "emails": ["jaredhanson@example.com"] \
-            } \
-        }';
+        var body = '{"user_id": "123456789","name": "Jared Hanson","given_name": "Jared","family_name": "Hanson", "email": "jaredhanson@example.com" }';
         
         callback(null, body, undefined);
       }
@@ -66,11 +56,10 @@ vows.describe('PayPalStrategy').addBatch({
       'should load profile' : function(err, profile) {
         assert.equal(profile.provider, 'paypal');
         assert.equal(profile.id, '123456789');
-        assert.equal(profile.displayName, 'Jared Hanson');
+        assert.equal(profile._json.name, 'Jared Hanson');
         assert.equal(profile.name.familyName, 'Hanson');
         assert.equal(profile.name.givenName, 'Jared');
-        assert.lengthOf(profile.emails, 1);
-        assert.equal(profile.emails[0].value, 'jaredhanson@example.com');
+        assert.equal(profile.emails[0], 'jaredhanson@example.com');
       },
       'should set raw property' : function(err, profile) {
         assert.isString(profile._raw);
