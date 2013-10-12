@@ -35,7 +35,7 @@ passport.use(new PayPalStrategy({
   function(accessToken, refreshToken, profile, done) {
     // asynchronous verification, for effect...
     process.nextTick(function () {
-      
+
       // To keep the example simple, the user's PayPal profile is returned to
       // represent the logged-in user.  In a typical application, you would want
       // to associate the PayPal account with a user record in your database,
@@ -86,7 +86,7 @@ app.get('/login', function(req, res){
 //   redirecting the user to paypal.com.  After authorization, PayPal will
 //   redirect the user back to this application at /auth/paypal/callback
 app.get('/auth/paypal',
-  passport.authenticate('paypal', { scope: 'https://identity.x.com/xidentity/resources/profile/me' }),
+  passport.authenticate('paypal', { scope: 'openid profile email' }),
   function(req, res){
     // The request will be redirected to PayPal for authentication, so this
     // function will not be called.
@@ -97,7 +97,7 @@ app.get('/auth/paypal',
 //   request.  If authentication fails, the user will be redirected back to the
 //   login page.  Otherwise, the primary route function function will be called,
 //   which, in this example, will redirect the user to the home page.
-app.get('/auth/paypal/callback', 
+app.get('/auth/paypal/callback',
   passport.authenticate('paypal', { failureRedirect: '/login' }),
   function(req, res) {
     res.redirect('/');
