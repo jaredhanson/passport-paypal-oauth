@@ -69,6 +69,42 @@ vows.describe('PayPalStrategy').addBatch({
       },
     },
   },
+
+  'strategy when loading user profile with real user_id': {
+    topic: function() {
+      var strategy = new PayPalStrategy({
+        clientID: 'ABC123',
+        clientSecret: 'secret'
+      },
+      function() {});
+
+      // mock
+      strategy._oauth2.getProtectedResource = function(url, accessToken, callback) {
+        var body = '{"user_id": "https://www.paypal.com/webapps/auth/identity/user/123456789","name": "Jared Hanson","given_name": "Jared","family_name": "Hanson", "email": "jaredhanson@example.com" }';
+
+        callback(null, body, undefined);
+      };
+
+      return strategy;
+    },
+
+    'when told to load user profile': {
+      topic: function(strategy) {
+        var self = this;
+        function done(err, profile) {
+          self.callback(err, profile);
+        }
+
+        process.nextTick(function () {
+          strategy.userProfile('access-token', done);
+        });
+      },
+
+      'should remove https://www.paypal.com/webapps/auth/identity/user/ prefix from user_id' : function(err, profile) {
+        assert.equal(profile.id, '123456789');
+      },
+    },
+  },
   
   'strategy when loading user profile and encountering an error': {
     topic: function() {
