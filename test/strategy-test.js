@@ -29,7 +29,7 @@ vows.describe('PayPalStrategy').addBatch({
       function() {});
       
       // mock
-      strategy._oauth2.getProtectedResource = function(url, accessToken, callback) {
+      strategy._oauth2.get = function(url, accessToken, callback) {
         var body = '{"user_id": "123456789","name": "Jared Hanson","given_name": "Jared","family_name": "Hanson", "email": "jaredhanson@example.com" }';
         
         callback(null, body, undefined);
@@ -79,7 +79,7 @@ vows.describe('PayPalStrategy').addBatch({
       function() {});
 
       // mock
-      strategy._oauth2.getProtectedResource = function(url, accessToken, callback) {
+      strategy._oauth2.get = function(url, accessToken, callback) {
         var body = '{"user_id": "https://www.paypal.com/webapps/auth/identity/user/123456789","name": "Jared Hanson","given_name": "Jared","family_name": "Hanson", "email": "jaredhanson@example.com" }';
 
         callback(null, body, undefined);
@@ -115,7 +115,7 @@ vows.describe('PayPalStrategy').addBatch({
       function() {});
       
       // mock
-      strategy._oauth2.getProtectedResource = function(url, accessToken, callback) {
+      strategy._oauth2.get = function(url, accessToken, callback) {
         callback(new Error('something-went-wrong'));
       }
       

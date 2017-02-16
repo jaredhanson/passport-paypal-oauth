@@ -1,6 +1,6 @@
 {
   "name": "passport-paypal-oauth",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "PayPal (OAuth) authentication strategy for Passport.",
   "keywords": [
     "passport",
