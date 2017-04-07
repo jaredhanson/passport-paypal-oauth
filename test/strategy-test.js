@@ -5,7 +5,7 @@ var PayPalStrategy = require('passport-paypal-oauth/strategy');
 
 
 vows.describe('PayPalStrategy').addBatch({
-  
+
   'strategy': {
     topic: function() {
       return new PayPalStrategy({
@@ -14,12 +14,97 @@ vows.describe('PayPalStrategy').addBatch({
       },
       function() {});
     },
-    
+
     'should be named paypal': function (strategy) {
       assert.equal(strategy.name, 'paypal');
     },
   },
-  
+
+  'strategy when paypal client is running on live environment (default)': {
+    topic: function () {
+      var strategy = new PayPalStrategy({
+        clientID: 'ABC123',
+        clientSecret: 'secret'
+      }, function () { });
+
+      // mock
+      strategy._oauth2.get = function (url, accessToken, callback) {
+        assert.equal(url, 'https://api.paypal.com/v1/identity/openidconnect/userinfo/?schema=openid')
+        var body = '{"user_id": "123456789","name": "Jared Hanson","given_name": "Jared","family_name": "Hanson", "email": "jaredhanson@example.com" }';
+
+        callback(null, body, undefined);
+      }
+
+      return strategy;
+    },
+
+    'we use authorize url to live api': function (strategy) {
+      // Be aware we are asserting where 'passport-oauth' saves the urls, this may change
+      assert.equal(strategy._oauth2._authorizeUrl, 'https://www.paypal.com/signin/authorize')
+    },
+
+    'we use token url to live api': function (strategy) {
+      // Be aware we are asserting where 'passport-oauth' saves the urls, this may change
+      assert.equal(strategy._oauth2._accessTokenUrl, 'https://api.paypal.com/v1/identity/openidconnect/tokenservice');
+    },
+
+    'we use user profile url to live api': function (strategy) {
+      strategy.userProfile('access-token', function () { });
+    }
+  },
+
+  'strategy when paypal client is running on sandbox environment': {
+    topic: function () {
+      var strategy = new PayPalStrategy({
+        clientID: 'ABC123',
+        clientSecret: 'secret',
+        paypalEnvironment: 'sandbox'
+      }, function () {});
+
+      // mock
+      strategy._oauth2.get = function (url, accessToken, callback) {
+        assert.equal(url, 'https://api.sandbox.paypal.com/v1/identity/openidconnect/userinfo/?schema=openid')
+        var body = '{"user_id": "123456789","name": "Jared Hanson","given_name": "Jared","family_name": "Hanson", "email": "jaredhanson@example.com" }';
+
+        callback(null, body, undefined);
+      }
+
+      return strategy;
+    },
+
+    'we use authorize url to sandbox api': function (strategy) {
+      // Be aware we are asserting where 'passport-oauth' saves the urls, this may change
+      assert.equal(strategy._oauth2._authorizeUrl, 'https://www.sandbox.paypal.com/signin/authorize')
+    },
+
+    'we use token url to sandbox api': function (strategy) {
+      // Be aware we are asserting where 'passport-oauth' saves the urls, this may change
+      assert.equal(strategy._oauth2._accessTokenUrl, 'https://api.sandbox.paypal.com/v1/identity/openidconnect/tokenservice');
+    },
+
+    'we use user profile url to sandbox api': function (strategy) {
+      strategy.userProfile('access-token', function(){});
+    }
+  },
+
+  'strategy when paypal client is running on not supported environment': {
+    topic: {
+      clientID: 'ABC123',
+      clientSecret: 'secret',
+      paypalEnvironment: 'other'
+    },
+
+    'should throw an error': function (strategyOptions) {
+      assert.throws(function() {
+        new PayPalStrategy(strategyOptions, function () {});
+      }, function (err) {
+        return (err instanceof TypeError) && /paypalEnvironment option must be "sandbox", "live" or not set at all \(default to "live"\)/.test(err);
+      },
+      'TypeError');
+    },
+
+  },
+
   'strategy when loading user profile': {
     topic: function() {
       var strategy = new PayPalStrategy({
@@ -27,29 +112,29 @@ vows.describe('PayPalStrategy').addBatch({
         clientSecret: 'secret'
       },
       function() {});
-      
+
       // mock
       strategy._oauth2.get = function(url, accessToken, callback) {
         var body = '{"user_id": "123456789","name": "Jared Hanson","given_name": "Jared","family_name": "Hanson", "email": "jaredhanson@example.com" }';
-        
+
         callback(null, body, undefined);
       }
-      
+
       return strategy;
     },
-    
+
     'when told to load user profile': {
       topic: function(strategy) {
         var self = this;
         function done(err, profile) {
           self.callback(err, profile);
         }
-        
+
         process.nextTick(function () {
           strategy.userProfile('access-token', done);
         });
       },
-      
+
       'should not error' : function(err, req) {
         assert.isNull(err);
       },
@@ -105,7 +190,7 @@ vows.describe('PayPalStrategy').addBatch({
       },
     },
   },
-  
+
   'strategy when loading user profile and encountering an error': {
     topic: function() {
       var strategy = new PayPalStrategy({
@@ -113,27 +198,27 @@ vows.describe('PayPalStrategy').addBatch({
         clientSecret: 'secret'
       },
       function() {});
-      
+
       // mock
       strategy._oauth2.get = function(url, accessToken, callback) {
         callback(new Error('something-went-wrong'));
       }
-      
+
       return strategy;
     },
-    
+
     'when told to load user profile': {
       topic: function(strategy) {
         var self = this;
         function done(err, profile) {
           self.callback(err, profile);
         }
-        
+
         process.nextTick(function () {
           strategy.userProfile('access-token', done);
         });
       },
-      
+
       'should error' : function(err, req) {
         assert.isNotNull(err);
       },
@@ -145,5 +230,5 @@ vows.describe('PayPalStrategy').addBatch({
       },
     },
   },
-  
+
 }).export(module);
