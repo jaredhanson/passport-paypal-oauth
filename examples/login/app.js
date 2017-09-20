@@ -3,9 +3,10 @@ var express = require('express')
   , util = require('util')
   , PayPalStrategy = require('passport-paypal-oauth').Strategy;
 
+
+// Register your app here: https://devportal.x.com
 var PAYPAL_APP_ID = "--insert-paypal-app-id-here--"
 var PAYPAL_APP_SECRET = "--insert-paypal-app-secret-here--";
-
 
 // Passport session setup.
 //   To support persistent login sessions, Passport needs to be able to
@@ -85,8 +86,9 @@ app.get('/login', function(req, res){
 //   request.  The first step in PayPal authentication will involve
 //   redirecting the user to paypal.com.  After authorization, PayPal will
 //   redirect the user back to this application at /auth/paypal/callback
+// Supported scopes: openid profile email address phone
 app.get('/auth/paypal',
-  passport.authenticate('paypal', { scope: 'https://identity.x.com/xidentity/resources/profile/me' }),
+  passport.authenticate('paypal', { scope: 'openid profile' }),
   function(req, res){
     // The request will be redirected to PayPal for authentication, so this
     // function will not be called.
