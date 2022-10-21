@@ -1,8 +1,15 @@
 {
   "name": "passport-paypal-oauth",
-  "version": "0.1.0",
+  "version": "0.3.0",
   "description": "PayPal (OAuth) authentication strategy for Passport.",
-  "keywords": ["passport", "paypal", "auth", "authn", "authentication", "identity"],
+  "keywords": [
+    "passport",
+    "paypal",
+    "auth",
+    "authn",
+    "authentication",
+    "identity"
+  ],
   "repository": {
     "type": "git",
     "url": "git://github.com/jaredhanson/passport-paypal-oauth.git"
@@ -15,20 +22,24 @@
     "email": "jaredhanson@gmail.com",
     "url": "http://www.jaredhanson.net/"
   },
-  "licenses": [ {
-    "type": "MIT",
-    "url": "http://www.opensource.org/licenses/MIT" 
-  } ],
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "http://www.opensource.org/licenses/MIT"
+    }
+  ],
   "main": "./lib/passport-paypal-oauth",
   "dependencies": {
     "pkginfo": "0.2.x",
-    "passport-oauth": "~0.1.2"
+    "passport-oauth": "1.x.x"
   },
   "devDependencies": {
-    "vows": "0.6.x"
+    "vows": "^0.8.1"
   },
   "scripts": {
     "test": "NODE_PATH=lib node_modules/.bin/vows test/*-test.js"
   },
-  "engines": { "node": ">= 0.4.0" }
+  "engines": {
+    "node": ">= 0.4.0"
+  }
 }

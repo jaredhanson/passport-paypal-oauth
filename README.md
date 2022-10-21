@@ -15,6 +15,10 @@ unobtrusively integrated into any application or framework that supports
 
 ## Usage
 
+#### Register your app with PayPal
+
+Login to the [Developer Portal](https://devportal.x.com/sdm/myprofile) and register your application.
+
 #### Configure Strategy
 
 The PayPal authentication strategy authenticates users using a PayPal
@@ -34,6 +38,10 @@ accepts these credentials and calls `done` providing a user, as well as
       }
     ));
 
+You can provide an extra option when creating the `PaypalStrategy` which is `paypalEnvironment`, this
+option defines the environment where the client is located in Paypal, it can be `sandbox` or `live`, when
+no provided it will default to `live` environment. It just configures the default urls internally.
+
 #### Authenticate Requests
 
 Use `passport.authenticate()`, specifying the `'paypal'` strategy, to
@@ -45,7 +53,7 @@ application:
     app.get('/auth/paypal',
       passport.authenticate('paypal'));
 
-    app.get('/auth/paypal/callback', 
+    app.get('/auth/paypal/callback',
       passport.authenticate('paypal', { failureRedirect: '/login' }),
       function(req, res) {
         // Successful authentication, redirect home.
